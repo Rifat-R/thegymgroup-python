@@ -1,0 +1,37 @@
+[project]
+name = "thegymgroup"
+version = "0.1.0"
+description = "A Python client for The Gym Group API"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "requests>=2.32.5",
+]
+
+
+[tool.basedpyright]
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.12"
+
+include = [ "." ]
+exclude = [
+  ".venv/",
+  ".git/",
+  "**/__pycache__",
+]
+
+reportMissingImports = true
+reportMissingTypeStubs = false
+typeCheckingMode = "basic"
+
+reportOptionalMemberAccess = "warning"
+reportOptionalSubscript = "warning"
+reportOptionalCall = "warning"
+reportOptionalIterable = "warning"
+
+reportGeneralTypeIssues = "warning"
+reportUntypedFunctionDecorator = "none"
+reportUnnecessaryTypeIgnoreComment = "warning"
+reportUnboundVariable = "error"
+reportUnusedImport = "warning"
