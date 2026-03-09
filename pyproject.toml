@@ -1,7 +1,7 @@
 [project]
-name = "thegymgroup"
+name = "thegymgroup-python"
 version = "0.1.0"
-description = "A Python client for The Gym Group API"
+description = "An Unofficial Python wrapper for The Gym Group's API."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
