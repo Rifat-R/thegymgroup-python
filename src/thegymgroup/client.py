@@ -61,7 +61,7 @@ class Client:
         app_version: str = "6.5.1",
         app_version_code: str = "38",
         app_version_header: str = "9999",
-    ):
+    ) -> "Client":
         session = requests.Session()
         headers = BASE_HEADERS.copy()
         headers["x-np-app-version"] = app_version_header
@@ -121,7 +121,7 @@ class Client:
             params["type"] = class_type
         return self._get(f"/np/company/{location_id}/classes", params=params)
 
-    def get_gym_busyness(self, location: str | Location):
+    def get_gym_occupancy(self, location: str | Location):
         gym_location_id = resolve_location(location)
         params = {"gymLocationId": gym_location_id}
         return self._get(
