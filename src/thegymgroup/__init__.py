@@ -1,1 +1,2 @@
-from src.thegymgroup.client import Client
+from .client import Client
+from .locations import Locations
