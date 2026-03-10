@@ -1,5 +1,5 @@
 import requests
-from .locations import resolve_location
+from .locations import resolve_location, Location
 
 BASE_URL = "https://thegymgroup.netpulse.com"
 
@@ -22,6 +22,8 @@ USER_AGENT_TEMPLATE = (
 
 class Client:
     def __init__(self, session: requests.Session, exerciser_uuid: str):
+        if not exerciser_uuid:
+            raise ValueError("exerciser_uuid must not be empty")
         self.session = session
         self.exerciser_uuid = exerciser_uuid
 
@@ -96,13 +98,13 @@ class Client:
             params["clubUuid"] = club_uuid
         return self._get(f"/np/exerciser/{self.exerciser_uuid}/schedule", params=params)
 
-    def get_class(self, location: str, class_uuid: str):
+    def get_class(self, location: Location | str, class_uuid: str):
         location_id = resolve_location(location)
         return self._get(f"/np/company/{location_id}/class/{class_uuid}")
 
     def get_classes(
         self,
-        location: str,
+        location: str | Location,
         *,
         start_datetime: int,
         end_datetime: int,
@@ -119,7 +121,8 @@ class Client:
             params["type"] = class_type
         return self._get(f"/np/company/{location_id}/classes", params=params)
 
-    def get_gym_busyness(self, gym_location_id: str):
+    def get_gym_busyness(self, location: str | Location):
+        gym_location_id = resolve_location(location)
         params = {"gymLocationId": gym_location_id}
         return self._get(
             f"/np/thegymgroup/v1.0/exerciser/{self.exerciser_uuid}/gym-busyness",
