@@ -1,4 +1,5 @@
 import requests
+from .locations import resolve_location
 
 BASE_URL = "https://thegymgroup.netpulse.com"
 
@@ -95,18 +96,20 @@ class Client:
             params["clubUuid"] = club_uuid
         return self._get(f"/np/exerciser/{self.exerciser_uuid}/schedule", params=params)
 
-    def get_class(self, company_uuid: str, class_uuid: str):
-        return self._get(f"/np/company/{company_uuid}/class/{class_uuid}")
+    def get_class(self, location: str, class_uuid: str):
+        location_id = resolve_location(location)
+        return self._get(f"/np/company/{location_id}/class/{class_uuid}")
 
     def get_classes(
         self,
-        company_uuid: str,
+        location: str,
         *,
         start_datetime: int,
         end_datetime: int,
         exerciser_uuid: str | None = None,
         class_type: str | None = None,
     ):
+        location_id = resolve_location(location)
         params = {
             "startDateTime": start_datetime,
             "endDateTime": end_datetime,
@@ -114,7 +117,7 @@ class Client:
         }
         if class_type is not None:
             params["type"] = class_type
-        return self._get(f"/np/company/{company_uuid}/classes", params=params)
+        return self._get(f"/np/company/{location_id}/classes", params=params)
 
     def get_gym_busyness(self, gym_location_id: str):
         params = {"gymLocationId": gym_location_id}

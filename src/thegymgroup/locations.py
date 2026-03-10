@@ -1,10 +1,6 @@
-"""
-Known location identifiers used by the SDK.
-This file is auto-generated.
-"""
-
 from dataclasses import dataclass
 from typing import Iterable
+from uuid import UUID
 
 
 @dataclass(frozen=True, slots=True)
@@ -1207,6 +1203,6 @@ def list_locations() -> Iterable[Location]:
 def resolve_location(location: Location | str) -> str:
     if isinstance(location, Location):
         return location.id
-
     if isinstance(location, str):
+        UUID(location)
         return location
