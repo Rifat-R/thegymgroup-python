@@ -2,6 +2,8 @@ import requests
 from .locations import resolve_location, Location
 from datetime import date, datetime
 from .datetime_utils import to_api_iso, to_epoch_millis
+from .models import GymOccupancy, HistoricalBusyness
+
 
 BASE_URL = "https://thegymgroup.netpulse.com"
 
@@ -125,13 +127,21 @@ class Client:
             params["type"] = class_type
         return self._get(f"/np/company/{location_id}/classes", params=params)
 
-    def get_gym_occupancy(self, location: str | Location):
-        """See how busy the gym is right now. Returns a percentage value between 0 and 100."""
-        gym_location_id = resolve_location(location)
-        params = {"gymLocationId": gym_location_id}
-        return self._get(
+    def get_gym_occupancy(self, location: str | Location) -> GymOccupancy:
+        data = self._get(
             f"/np/thegymgroup/v1.0/exerciser/{self.exerciser_uuid}/gym-busyness",
-            params=params,
+            params={"gymLocationId": resolve_location(location)},
+        )
+        return GymOccupancy(
+            gym_location_id=data["gymLocationId"],
+            gym_location_name=data["gymLocationName"],
+            current_capacity=data["currentCapacity"],
+            current_percentage=data["currentPercentage"],
+            historical=[
+                HistoricalBusyness(hour=item["hour"], percentage=item["percentage"])
+                for item in data.get("historical", [])
+            ],
+            status=data["status"],
         )
 
     def get_check_ins_history(self, start: date | datetime, end: date | datetime):
