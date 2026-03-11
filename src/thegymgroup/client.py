@@ -1,5 +1,7 @@
 import requests
 from .locations import resolve_location, Location
+from datetime import date, datetime
+from .datetime_utils import to_api_iso, to_epoch_millis
 
 BASE_URL = "https://thegymgroup.netpulse.com"
 
@@ -85,17 +87,19 @@ class Client:
     def get_schedule(
         self,
         *,
-        start_datetime: int | None = None,
-        end_datetime: int | None = None,
-        club_uuid: str | None = None,
+        start: date | datetime | None = None,
+        end: date | datetime | None = None,
+        location: Location | None = None,
     ):
+        """Get the exerciser's booked classes"""
         params = {}
-        if start_datetime is not None:
-            params["startDateTime"] = start_datetime
-        if end_datetime is not None:
-            params["endDateTime"] = end_datetime
-        if club_uuid is not None:
-            params["clubUuid"] = club_uuid
+        if start is not None:
+            params["startDateTime"] = to_epoch_millis(start)
+        if end is not None:
+            params["endDateTime"] = to_epoch_millis(end, end_of_day=True)
+        if location is not None:
+            location_id = resolve_location(location)
+            params["clubUuid"] = location_id
         return self._get(f"/np/exerciser/{self.exerciser_uuid}/schedule", params=params)
 
     def get_class(self, location: Location | str, class_uuid: str):
@@ -106,15 +110,15 @@ class Client:
         self,
         location: str | Location,
         *,
-        start_datetime: int,
-        end_datetime: int,
+        start: date | datetime,
+        end: date | datetime,
         exerciser_uuid: str | None = None,
         class_type: str | None = None,
     ):
         location_id = resolve_location(location)
         params = {
-            "startDateTime": start_datetime,
-            "endDateTime": end_datetime,
+            "startDateTime": to_epoch_millis(start),
+            "endDateTime": to_epoch_millis(end, end_of_day=True),
             "exerciserUuid": exerciser_uuid or self.exerciser_uuid,
         }
         if class_type is not None:
@@ -122,6 +126,7 @@ class Client:
         return self._get(f"/np/company/{location_id}/classes", params=params)
 
     def get_gym_occupancy(self, location: str | Location):
+        """See how busy the gym is right now. Returns a percentage value between 0 and 100."""
         gym_location_id = resolve_location(location)
         params = {"gymLocationId": gym_location_id}
         return self._get(
@@ -129,8 +134,11 @@ class Client:
             params=params,
         )
 
-    def get_check_ins_history(self, start_date: str, end_date: str):
-        params = {"startDate": start_date, "endDate": end_date}
+    def get_check_ins_history(self, start: date | datetime, end: date | datetime):
+        params = {
+            "startDate": to_api_iso(start),
+            "endDate": to_api_iso(end, end_of_day=True),
+        }
         return self._get(
             f"/np/exercisers/{self.exerciser_uuid}/check-ins/history",
             params=params,
@@ -145,9 +153,9 @@ class Client:
     def get_membership(self):
         return self._get(f"/np/exerciser/{self.exerciser_uuid}/membership")
 
-    def get_hours_in_gym(self, start_date: str, end_date: str) -> int:
+    def get_hours_in_gym(self, start: date | datetime, end: date | datetime) -> int:
         mins = 0
-        visits = self.get_check_ins_history(start_date=start_date, end_date=end_date)
+        visits = self.get_check_ins_history(start=start, end=end)
 
         for i in visits.get("checkIns", []):
             mins += i.get("duration", 0) / 60000
