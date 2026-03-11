@@ -77,7 +77,7 @@ wheels = [
 ]
 
 [[package]]
-name = "thegymgroup"
+name = "thegymgroup-python"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
