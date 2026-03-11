@@ -11,6 +11,9 @@ authors = [
     {name="Rifat Rahman"}
 ]
 
+[project.urls]
+Homepage = "https://github.com/Rifat-R/thegymgroup-python"
+Repository = "https://github.com/Rifat-R/thegymgroup-python"
 
 [tool.basedpyright]
 venvPath = "."
