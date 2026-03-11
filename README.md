@@ -11,16 +11,10 @@ This project is not affiliated with The Gym Group.
 
 ## Install
 
-From source:
+From PyPI:
 
 ```bash
-pip install .
-```
-
-Editable install for development:
-
-```bash
-pip install -e .
+pip install thegymgroup-python
 ```
 
 ## Login
