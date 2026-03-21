@@ -1,6 +1,6 @@
 # thegymgroup-python
 
-Unofficial Python SDK for The Gym Group mobile API.
+Python SDK for The Gym Group mobile API (unofficial).
 
 This project is not affiliated with The Gym Group.
 
