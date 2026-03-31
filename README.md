@@ -86,3 +86,8 @@ classes = client.get_classes(
 
 print(f"Found {len(classes.get('classes', []))} classes")
 ```
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file
+for details.
