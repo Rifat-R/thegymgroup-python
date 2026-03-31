@@ -2,7 +2,11 @@
 
 Python SDK for The Gym Group mobile API (unofficial).
 
-This project is not affiliated with The Gym Group.
+This project is an unofficial SDK and is not affiliated with or endorsed
+by The Gym Group.
+
+It uses reverse-engineered mobile API endpoints, which may change or break
+at any time.
 
 ## Requirements
 
@@ -82,8 +86,3 @@ classes = client.get_classes(
 
 print(f"Found {len(classes.get('classes', []))} classes")
 ```
-
-## Notes
-
-- This SDK targets mobile API endpoints and may break if upstream APIs change.
-- Use at your own risk.
